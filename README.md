@@ -6,7 +6,7 @@
 
 1. Clone or download the project.
 2. `cd` into the directory.
-3. Open the project by your preffered IDE.
+3. Open the project by your preferred IDE.
 4. Copy the `.env.sample` -> `cp .env.sample .env`.
 5. Update the `.env` values.
 6. Create the `assets` and `local_assets` folder in the root directory (`mkdir assets`, `mkdir local_assets`).
