@@ -1,45 +1,43 @@
-version: '3'
-
 services:
-
   backend: # port 5000
     build:
-        context: ./scene-editor/backend
-        dockerfile: ops/Dockerfile
+      context: ./scene-editor/backend
+      dockerfile: ops/Dockerfile
     image: backend
-    container_name: backend
     environment:
-        DATABASE_URI: "postgresql://postgres:${DATABASE_PASSWORD}@postgres/postgres_pcitvr"
-        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-        JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-        DEBUG: 1
+      DATABASE_URI: "postgresql://postgres:${DATABASE_PASSWORD}@postgres/postgres_pcitvr"
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      DEBUG: 1
     volumes:
-        - type: bind
-          source: ./scene-editor/backend
-          target: /app
-          read_only: True
-        - type: bind
-          source: ./assets
-          target: /assets
+      - type: bind
+        source: ./scene-editor/backend
+        target: /app
+        read_only: True
+      - type: bind
+        source: ./assets
+        target: /assets
     command: bash -c "/entrypoint.sh"
     depends_on:
-        - postgres
-        - redis
+      - postgres
+      - redis
+    restart: unless-stopped
 
   redis:
     image: redis
+    restart: unless-stopped
 
   postgres:
     image: postgres:15
-    container_name: postgres-db
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-        - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-        - POSTGRES_USER=postgres
-        - POSTGRES_DB=postgres_pcitvr
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres_pcitvr
     ports:
       - 5433:5432
+    restart: unless-stopped
 
   # adminer:
   #   image: adminer
@@ -64,6 +62,7 @@ services:
         read_only: true
     ports:
       - 8080:8080
+    restart: unless-stopped
 
   frontend: # port 3000
     image: node:18
@@ -71,13 +70,22 @@ services:
       - type: bind
         source: ./scene-editor/frontend
         target: /app
+      - type: volume
+        source: frontend_node_modules
+        target: /app/node_modules
+    ports:
+      - 3000:3000
     environment:
       HOST: 0.0.0.0
       NODE_ENV: development
       NODE_OPTIONS: --openssl-legacy-provider
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+      WDS_SOCKET_PORT: 3000
     working_dir: /app
-    entrypoint: npm
-    command: start
+    entrypoint: sh
+    command: -c "npm install && npm start"
 
 volumes:
   postgres:
+  frontend_node_modules:

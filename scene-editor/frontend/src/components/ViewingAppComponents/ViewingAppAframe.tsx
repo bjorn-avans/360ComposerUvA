@@ -17,7 +17,6 @@ import { stereoscopic } from './AframeComponents/Stereoscopic';
 import { Button } from "@mui/material";
 import { isIOS, isMobile, isSafari } from "react-device-detect";
 import { delay } from "lodash";
-import { WindowsMotionController } from "@babylonjs/core";
 import { HlsContext } from "../../App";
 import Hls from "hls.js";
 
@@ -29,8 +28,8 @@ interface ViewingAppAframeProps {
     onFinish: Function
 }
 
-const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, onFinish}: ViewingAppAframeProps) => {
-    const hls = useContext<Hls | undefined>(HlsContext);
+const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({ video, annotations, onFinish }: ViewingAppAframeProps) => {
+    const hls = useContext(HlsContext);
 
     const [appState, setAppState] = useState({
         started: false,
@@ -74,12 +73,12 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
     // menuOptionCallback receives a response from the controller
     // when an option is submitted to the controller.
     const menuOptionCallback = (response: string) => {
-        switch(response) {
+        switch (response) {
             // Exiting application. Exit VR and set to ended
             case 'exit': {
                 setAppState({
                     ...appState,
-                    ended:true
+                    ended: true
                 });
                 exitVR();
                 break;
@@ -88,7 +87,7 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
             case 'end': {
                 setAppState({
                     ...appState,
-                    ended:true
+                    ended: true
                 });
                 break;
             }
@@ -107,7 +106,7 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
     const chosenMenuOption = (id: string) => {
         setAppState({
             ...appState,
-            menuEnabled:false
+            menuEnabled: false
         });
         const actionId = annotations.options.find((option: any) => option.id === id).action.id;
         onFinish(actionId, menuOptionCallback);
@@ -121,8 +120,8 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
                 pauseVideo();
                 setAppState({
                     ...appState,
-                    videoPlaying:false,
-                    menuEnabled:true
+                    videoPlaying: false,
+                    menuEnabled: true
                 });
             }
         }
@@ -130,7 +129,7 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
 
     const onVideoEnded = () => {
         console.debug('Video ended');
-        onFinish("", () => {return});
+        onFinish("", () => { return });
         setAppState({
             started: true,
             menuEnabled: false,
@@ -158,9 +157,9 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
     const startVideo = () => {
         setAppState({
             ...appState,
-            started:true,
-            videoPlaying:true,
-            menuEnabled:false
+            started: true,
+            videoPlaying: true,
+            menuEnabled: false
         });
         playVideo();
     };
@@ -168,13 +167,13 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
     const onVideoLoaded = () => {
         console.debug('Video loaded');
         // If the starting menu is open. Do not start playing.
-        if (!appState.started) {setAppState({...appState, videoLoaded:true}); return};
+        if (!appState.started) { setAppState({ ...appState, videoLoaded: true }); return };
         playVideo();
         setAppState({
             ...appState,
-            videoPlaying:true,
-            menuEnabled:false,
-            videoLoaded:true
+            videoPlaying: true,
+            menuEnabled: false,
+            videoLoaded: true
         });
     }
 
@@ -185,7 +184,7 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
         setPlayButtonOpen(false);
         setAppState({
             ...appState,
-            videoPlaying:true,
+            videoPlaying: true,
         });
     };
 
@@ -193,7 +192,7 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
         setAppState({
             ...appState,
             videoPlaying: false,
-            videoLoaded:false
+            videoLoaded: false
         });
         pauseVideo();
         if (isIOS && !appState.started) {
@@ -228,39 +227,40 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
 
     return (
         <>
-        <div id="video-player-root" style={{display: "none"}}>
-            <video
-                id={`aframe-video-${video.id}`}
-                playsInline
-                onTimeUpdate={(e: any) => onTimeUpdate(e.target.currentTime)}
-                autoPlay={false}
-                muted
-            />
-        </div>
+            <div id="video-player-root" style={{ display: "none" }}>
+                <video
+                    id={`aframe-video-${video.id}`}
+                    playsInline
+                    onTimeUpdate={(e: any) => onTimeUpdate(e.target.currentTime)}
+                    autoPlay={false}
+                    muted
+                />
+            </div>
 
-        <Scene
-            id="aframescene"
-            vrModeUI={{enabled: false, enterVRButton: "#entervrbutton" }}
-            background={{color: "black"}}
-            embedded>
-            <StereoComponent
+            <Scene
+                id="aframescene"
+                vrModeUI={{ enabled: false, enterVRButton: "#entervrbutton" }}
+                background={{ color: "black" }}
+                embedded>
+                <StereoComponent
                     videoId={`aframe-video-${video.id}`}
                     stereoMode={video.view_type}
                     paused={!appState.videoPlaying}
-                    loading={!appState.videoPlaying && !appState.menuEnabled}/>
-            {!appState.started ? <StartMenu onStart={startVideo} /> : null}
-            {appState.ended ? <EndMenu onEnd={replay}/> : null}
-            {appState.menuEnabled && appState.started && !appState.ended ?
-                <Menu
-                            annotations={annotations}
-                            enabled={appState.menuEnabled && appState.started && !appState.ended}
-                            onOption={chosenMenuOption}/>
-            : null}
-        </Scene>
-            { appState.started && playButtonOpen ?
-               <Button
-                id="playbutton"
-                style={{position: 'absolute',
+                    loading={!appState.videoPlaying && !appState.menuEnabled} />
+                {!appState.started ? <StartMenu onStart={startVideo} /> : null}
+                {appState.ended ? <EndMenu onEnd={replay} /> : null}
+                {appState.menuEnabled && appState.started && !appState.ended ?
+                    <Menu
+                        annotations={annotations}
+                        enabled={appState.menuEnabled && appState.started && !appState.ended}
+                        onOption={chosenMenuOption} />
+                    : null}
+            </Scene>
+            {appState.started && playButtonOpen ?
+                <Button
+                    id="playbutton"
+                    style={{
+                        position: 'absolute',
                         zIndex: 9999,
                         top: "50%",
                         left: "50%",
@@ -269,33 +269,34 @@ const ViewingAppAframe: React.FC<ViewingAppAframeProps> = ({video, annotations, 
                         height: 80,
                         transform: "translate(-50%, -50%)",
                         padding: 10,
-                        fontSize:'2em',
+                        fontSize: '2em',
                         backgroundColor: 'white',
                         opacity: 0.9
-                        }}
-                onClick={handlePlayButton}
+                    }}
+                    onClick={handlePlayButton}
                 >
                     ▶
                 </Button>
-            :
+                :
                 null
             }
 
             <Button
-            id="entervrbutton"
-            style={{position: 'absolute',
+                id="entervrbutton"
+                style={{
+                    position: 'absolute',
                     zIndex: 9999,
                     right: 0,
                     bottom: 0,
                     color: 'black',
-                    margin:10,
+                    margin: 10,
                     padding: 10,
-                    fontSize:'1.2em',
+                    fontSize: '1.2em',
                     backgroundColor: 'white',
                     opacity: 0.8,
-                    cursor:'pointer'
-                    }}
-            onClick={enterVR}
+                    cursor: 'pointer'
+                }}
+                onClick={enterVR}
             >
                 ENTER VR
             </Button>
