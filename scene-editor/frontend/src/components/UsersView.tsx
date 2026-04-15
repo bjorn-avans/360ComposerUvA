@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
@@ -29,11 +29,11 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import NewUserDialog from './UserViewComponents/NewUserDialog';
 
-const Alert = (props: AlertProps) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} variant="filled" ref={ref} {...props} />;
+});
 
-const UserSnackbar = ({open, message, severity, handleClose}:any) => {
+const UserSnackbar = ({ open, message, severity, handleClose }: any) => {
   return (
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
       <Alert onClose={handleClose} severity={severity}>
@@ -43,7 +43,7 @@ const UserSnackbar = ({open, message, severity, handleClose}:any) => {
   )
 }
 
-const DeleteWarningDialog = ({open, id, handleClose, handleDelete}:any) => {
+const DeleteWarningDialog = ({ open, id, handleClose, handleDelete }: any) => {
   return (
     <Dialog
       open={open}
@@ -89,19 +89,19 @@ const useStyles = makeStyles((theme) =>
 )
 
 const Users = () => {
-  const userID = useSelector((state:any) => state.token.id)
+  const userID = useSelector((state: any) => state.token.id)
   const [users, setUsers] = useState([])
   const [loadingUsers, setLoadingUsers] = useState(true);
 
-  const [warningState, setWarningState] = useState({open: false, id: ""});
-  const [alertState, setAlertState] = useState({open: false, message: "", severity: ""})
+  const [warningState, setWarningState] = useState({ open: false, id: "" });
+  const [alertState, setAlertState] = useState({ open: false, message: "", severity: "" })
 
   const [dialog, setDialog] = useState(false);
 
   const classes = useStyles();
 
   const handleAlertClose = () => {
-    setAlertState({...alertState, open: false})
+    setAlertState({ ...alertState, open: false })
   }
 
   useEffect(() => {
@@ -111,20 +111,20 @@ const Users = () => {
 
   const fetchUsers = () =>
     axios.get(`/api/customer/?therapist_id=${userID}`)
-      .then((res:any) => setUsers(res.data))
+      .then((res: any) => setUsers(res.data))
       .then(() => setLoadingUsers(false))
-      .catch((e:any) => {
-        setAlertState({open: true, message: "An error occured while fetching users", severity: "error"})
+      .catch((e: any) => {
+        setAlertState({ open: true, message: "An error occured while fetching users", severity: "error" })
       })
 
-  const deleteUser = (id:string) =>
-    axios.post('/api/customer/delete', {id, therapist_id: userID})
+  const deleteUser = (id: string) =>
+    axios.post('/api/customer/delete', { id, therapist_id: userID })
       .then(fetchUsers)
-      .then(() => setWarningState({open: false, id: ""}))
-      .then(() => setAlertState({open: true, message: "Successfully deleted user", severity: "success"}))
-      .catch((e:any) => {
-        setWarningState({open: false, id: ""});
-        setAlertState({open: true, message: "An error occured while deleting users", severity: "error"});
+      .then(() => setWarningState({ open: false, id: "" }))
+      .then(() => setAlertState({ open: true, message: "Successfully deleted user", severity: "success" }))
+      .catch((e: any) => {
+        setWarningState({ open: false, id: "" });
+        setAlertState({ open: true, message: "An error occured while deleting users", severity: "error" });
       })
 
   return (
@@ -148,14 +148,14 @@ const Users = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user:any) => (
+            {users.map((user: any) => (
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.tag}</TableCell>
                 <TableCell>{user.access_code}</TableCell>
                 <TableCell><IconButton
                   aria-label="delete"
-                  onClick={() => setWarningState({open: true, id: user.id})}
+                  onClick={() => setWarningState({ open: true, id: user.id })}
                   size="large"><DeleteIcon /></IconButton></TableCell>
               </TableRow>
             ))}
@@ -163,8 +163,8 @@ const Users = () => {
         </Table>
       </TableContainer>
 
-      <NewUserDialog userID={userID} open={dialog} closeHandler={() => setDialog(false)} onUserCreated={() => {setDialog(false); fetchUsers()}} />
-      <DeleteWarningDialog id={warningState.id} open={warningState.open} handleDelete={() => deleteUser(warningState.id)} handleClose={() => setWarningState({open: false, id: ""})} />
+      <NewUserDialog userID={userID} open={dialog} closeHandler={() => setDialog(false)} onUserCreated={() => { setDialog(false); fetchUsers() }} />
+      <DeleteWarningDialog id={warningState.id} open={warningState.open} handleDelete={() => deleteUser(warningState.id)} handleClose={() => setWarningState({ open: false, id: "" })} />
       <UserSnackbar open={alertState.open} message={alertState.message} severity={alertState.severity} handleClose={handleAlertClose} />
     </div>
   );

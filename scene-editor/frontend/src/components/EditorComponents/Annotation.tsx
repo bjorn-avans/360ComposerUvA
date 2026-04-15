@@ -54,9 +54,9 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const Alert = (props: AlertProps) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} variant="filled" ref={ref} {...props} />;
+});
 
 type AnnotationSnackbarProps = {
   open: boolean,
@@ -68,11 +68,9 @@ type AnnotationSnackbarProps = {
 const AnnotationSnackbar: React.FC<AnnotationSnackbarProps> = ({ open, handleClose, message, severity }: AnnotationSnackbarProps): React.ReactElement => {
   return (
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-      <div>
-        <Alert onClose={handleClose} severity={severity}>
-          {message}
-        </Alert>
-      </div>
+      <Alert onClose={handleClose} severity={severity}>
+        {message}
+      </Alert>
     </Snackbar>
   )
 }

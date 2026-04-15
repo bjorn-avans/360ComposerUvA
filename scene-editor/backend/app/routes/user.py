@@ -47,10 +47,10 @@ class Login(Resource):
         user: UserModel = UserModel.query.filter_by(username=api.payload["username"]).first_or_404()
 
         if verify_password(user.password, api.payload["password"]):
-            access_token = create_access_token(identity={'id': user.id, 'role': 'user'})
-            refresh_token = create_refresh_token(identity={'id': user.id, 'role': 'user'})
+            access_token = create_access_token(identity=str(user.id), additional_claims={'role': 'user'})
+            refresh_token = create_refresh_token(identity=str(user.id), additional_claims={'role': 'user'})
 
-            resp = make_response({'id': user.id, 'role': 'user'}, HTTPStatus.OK)
+            resp = make_response({'id': str(user.id), 'role': 'user'}, HTTPStatus.OK)
 
             set_access_cookies(resp, access_token)
             set_refresh_cookies(resp, refresh_token)
@@ -68,10 +68,10 @@ class CustomerLogin(Resource):
         customer: CustomerModel = CustomerModel.query.filter_by(id=api.payload["id"]).first_or_404()
 
         if customer.access_code == api.payload["access_code"]:
-            access_token = create_access_token(identity={'id': customer.id, 'role': 'customer'})
-            refresh_token = create_refresh_token(identity={'id': customer.id, 'role': 'customer'})
+            access_token = create_access_token(identity=str(customer.id), additional_claims={'role': 'customer'})
+            refresh_token = create_refresh_token(identity=str(customer.id), additional_claims={'role': 'customer'})
 
-            resp = make_response({'id': customer.id, 'role': 'customer'}, HTTPStatus.OK)
+            resp = make_response({'id': str(customer.id), 'role': 'customer'}, HTTPStatus.OK)
             resp.headers.add('Connection', 'keep-alive')
 
             set_access_cookies(resp, access_token)

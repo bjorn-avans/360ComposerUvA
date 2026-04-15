@@ -31,7 +31,7 @@ jwt = JWTManager(app)
 
 @jwt.additional_claims_loader
 def add_claims_to_access_token(identity):
-    return {'id': identity['id'], 'role': identity['role'] }
+    return {'id': identity}
 
 blueprint = Blueprint("api", __name__, url_prefix="/api")
 api.init_app(blueprint)

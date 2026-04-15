@@ -38,8 +38,8 @@ class Token(Resource):
         except exceptions.NoAuthorizationError:
             return "No cookie set", HTTPStatus.BAD_REQUEST
 
-        current_user = get_jwt_identity()
-        return current_user, HTTPStatus.OK
+        claims = get_jwt()
+        return {'id': claims['id'], 'role': claims['role']}, HTTPStatus.OK
 
 @ns.route("/refresh")
 class TokenRefresh(Resource):
@@ -52,10 +52,8 @@ class TokenRefresh(Resource):
         if user is None:
             return "", HTTPStatus.UNAUTHORIZED
 
-        identity = {'id': user.id, 'role': claims['role']}
-
-        access_token = create_access_token(identity=identity)
-        resp = make_response(identity, HTTPStatus.OK)
+        access_token = create_access_token(identity=str(user.id), additional_claims={'role': claims['role']})
+        resp = make_response({'id': str(user.id), 'role': claims['role']}, HTTPStatus.OK)
         set_access_cookies(resp, access_token)
 
         return resp

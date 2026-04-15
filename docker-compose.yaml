@@ -70,15 +70,22 @@ services:
       - type: bind
         source: ./scene-editor/frontend
         target: /app
+      - type: volume
+        source: frontend_node_modules
+        target: /app/node_modules
     ports:
       - 3000:3000
     environment:
       HOST: 0.0.0.0
       NODE_ENV: development
       NODE_OPTIONS: --openssl-legacy-provider
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+      WDS_SOCKET_PORT: 3000
     working_dir: /app
-    entrypoint: npm
-    command: start
+    entrypoint: sh
+    command: -c "npm install && npm start"
 
 volumes:
   postgres:
+  frontend_node_modules:
