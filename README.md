@@ -30,7 +30,7 @@ In order to properly upload assets, these must be of similar format as [this vid
 ```sh
 yt-dlp -f 313+251 -o yt.webm 'https://www.youtube.com/watch?v=r8f4J80Z9eY'
 ```
-6. Excecute the following command to convert it back again to `.mp4` format. Note that `yt.webm` is the same file as from step 5.
+6. Execute the following command to convert it back again to `.mp4` format. Note that `yt.webm` is the same file as from step 5.
 ```sh
 ffmpeg \
 -y \
