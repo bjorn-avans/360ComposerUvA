@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import type { SyntheticEvent } from 'react';
 
 import { makeStyles, createStyles } from '@mui/styles';
 
@@ -15,8 +16,10 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import Snackbar from '@mui/material/Snackbar';
+import type { SnackbarCloseReason } from '@mui/material/Snackbar';
 
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import type { AlertColor } from '@mui/material/Alert';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -24,7 +27,7 @@ import { Button } from '@mui/material';
 
 import UpdateAnnotationDialog from "../../components/EditorComponents/UpdateAnnotationDialog";
 
-const valueLabelFormat = (value:number) => {
+const valueLabelFormat = (value: number) => {
   const minutes = Math.floor(value / 60);
   const seconds = Math.floor(value % 60);
 
@@ -57,12 +60,12 @@ const Alert = (props: AlertProps) => {
 
 type AnnotationSnackbarProps = {
   open: boolean,
-  handleClose: string,
+  handleClose: (event?: Event | SyntheticEvent, reason?: SnackbarCloseReason) => void,
   message: string,
-  severity: string,
+  severity: AlertColor,
 }
 
-const AnnotationSnackbar: React.FC<AnnotationSnackbarProps> = ({open, handleClose, message, severity}: AnnotationSnackbarProps):React.ReactElement => {
+const AnnotationSnackbar: React.FC<AnnotationSnackbarProps> = ({ open, handleClose, message, severity }: AnnotationSnackbarProps): React.ReactElement => {
   return (
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
       <div>
@@ -85,10 +88,10 @@ type AnnotationComponentProps = {
   options: any
 }
 
-const Annotation: React.FC<AnnotationComponentProps> = ({sceneID, annotationID, videoLength, num, onDelete, update, annotation, options}: AnnotationComponentProps):React.ReactElement => {
+const Annotation: React.FC<AnnotationComponentProps> = ({ sceneID, annotationID, videoLength, num, onDelete, update, annotation, options }: AnnotationComponentProps): React.ReactElement => {
   const classes = useStyles();
 
-  const [alertState, setAlertState] = useState({show: false, message:"", severity: ""})
+  const [alertState, setAlertState] = useState<{ show: boolean, message: string, severity: AlertColor }>({ show: false, message: "", severity: "info" })
   const [annotation_, setAnnotation_] = useState(annotation);
   const [options_, setOptions_] = useState(options);
 
@@ -106,35 +109,35 @@ const Annotation: React.FC<AnnotationComponentProps> = ({sceneID, annotationID, 
 
   const fetchAnnotation = () => {
     axios.get(`/api/scenes/${sceneID}/annotation?id=${annotationID}`)
-      .then((res:any) => setAnnotation_(res.data))
+      .then((res: any) => setAnnotation_(res.data))
       .catch((e) => console.log(e))
   }
 
   const fetchOptions = () => {
     //@ts-ignore
     axios.get(`/api/annotation/${annotationID}/options`)
-      .then((res:any) =>res.data).then(setOptions_)
-      .catch((e:any) => console.log(e))
+      .then((res: any) => res.data).then(setOptions_)
+      .catch((e: any) => console.log(e))
   }
 
   const handleDeleteAnnotation = () => {
-    axios.post(`/api/scenes/${sceneID}/annotation/delete`, {id: annotationID})
+    axios.post(`/api/scenes/${sceneID}/annotation/delete`, { id: annotationID })
       .then(onDelete)
       .catch((e) => console.log('error while deleting annotation', e))
   }
 
-  const closeHandler = (update:boolean) => {
+  const closeHandler = (update: boolean) => {
     setDialogOpen(false)
 
     if (update) {
       fetchAnnotation();
       fetchOptions();
-      setAlertState({show: true, message:"Successfully updated annotation", severity: "success"})
+      setAlertState({ show: true, message: "Successfully updated annotation", severity: "success" })
     }
   }
 
   const onError = () => {
-    setAlertState({show: true, message:"Something went wrong while updating annotation", severity: "error"})
+    setAlertState({ show: true, message: "Something went wrong while updating annotation", severity: "error" })
   }
 
   const annotationCard = () => {
@@ -162,11 +165,11 @@ const Annotation: React.FC<AnnotationComponentProps> = ({sceneID, annotationID, 
             </Grid>
             <Grid item xs={12}>
               <List className={classes.root}>
-                {options_.map((option:any, index:number) => (
+                {options_.map((option: any, index: number) => (
                   <ListItem key={`${option.id}-${index}`}>
                     <ListItemAvatar>
                       <Avatar>
-                        {index+1}
+                        {index + 1}
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={option.text} secondary={option.feedback} />
@@ -175,7 +178,7 @@ const Annotation: React.FC<AnnotationComponentProps> = ({sceneID, annotationID, 
               </List>
             </Grid>
             <Grid item xs={12}>
-              <Divider style={{marginTop: 10, marginBottom: 10}} />
+              <Divider style={{ marginTop: 10, marginBottom: 10 }} />
             </Grid>
             <Grid item xs={12}>
               <Button onClick={() => setDialogOpen(true)} color="primary">Edit Annotation</Button>
@@ -200,7 +203,7 @@ const Annotation: React.FC<AnnotationComponentProps> = ({sceneID, annotationID, 
         videoLength={videoLength}
         onError={onError}
       />
-      <AnnotationSnackbar open={alertState.show} message={alertState.message} severity={alertState.severity} handleClose={() => setAlertState({...alertState, show: false})} />
+      <AnnotationSnackbar open={alertState.show} message={alertState.message} severity={alertState.severity} handleClose={() => setAlertState({ ...alertState, show: false })} />
     </div>
   )
 }
