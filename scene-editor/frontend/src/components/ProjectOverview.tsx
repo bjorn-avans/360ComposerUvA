@@ -24,8 +24,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles, createStyles } from '@mui/styles';
 import { createTheme } from '@mui/material/styles';
 
-import placeholder from '../static/images/placeholder.jpg'
-
 import NewProjectDialog from "./SideMenuComponents/NewProjectDialog";
 import AlertDialog from "./UIComponents/AlertDialog"
 
@@ -33,13 +31,13 @@ const theme = createTheme();
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
-        flexGrow: 1,
-        padding: theme.spacing(2),
+      flexGrow: 1,
+      padding: theme.spacing(2),
     }
   })
 )
 
-const ProjectOverview : React.FC = () => {
+const ProjectOverview: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [openProjectDialog, setOpenProjectDialog] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -51,7 +49,7 @@ const ProjectOverview : React.FC = () => {
 
   const navigate = useNavigate();
 
-  const token = useSelector((state:any) => state.token);
+  const token = useSelector((state: any) => state.token);
 
   useEffect(() => {
     fetchProjects();
@@ -75,12 +73,12 @@ const ProjectOverview : React.FC = () => {
     setOpenDeleteDialog(true)
   }
 
-  const onDelectProjectConfirm = (agree:boolean) => {
+  const onDelectProjectConfirm = (agree: boolean) => {
     setOpenDeleteDialog(false)
-    if(agree && selectedProject){
+    if (agree && selectedProject) {
       axios
         .delete(`/api/project/${selectedProject}/`)
-        .then((res)=>{
+        .then((res) => {
           fetchProjects();
         })
         .catch((e) => {
@@ -89,17 +87,10 @@ const ProjectOverview : React.FC = () => {
     }
   }
 
-  const renderProject = (project:any) => (
+  const renderProject = (project: any) => (
     <Grid item xs={12} md={4} lg={3} key={project.id}>
       <Card variant="outlined">
         <CardActionArea>
-          <CardMedia
-            component="img"
-            alt={project.name}
-            image={placeholder}
-            title={project.name}
-            height={100}
-          />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               {project.name}
@@ -113,10 +104,10 @@ const ProjectOverview : React.FC = () => {
           <Button size="small" color="primary" onClick={() => navigate(`/app/project/${project.id}`)}>
             Edit
           </Button>
-          <IconButton 
-            onClick={()=>{onDeleteProject(project.id)}}
-            aria-label="Delete" 
-            sx={{ ml: 'auto'}}>
+          <IconButton
+            onClick={() => { onDeleteProject(project.id) }}
+            aria-label="Delete"
+            sx={{ ml: 'auto' }}>
             <DeleteIcon />
           </IconButton>
         </CardActions>
@@ -126,15 +117,15 @@ const ProjectOverview : React.FC = () => {
 
   const renderProjects = () => {
     if (projects.length == 0) {
-      return <Typography style={{marginLeft: 10}} gutterBottom variant="h5" component="h2">No projects have been added yet</Typography>
+      return <Typography style={{ marginLeft: 10 }} gutterBottom variant="h5" component="h2">No projects have been added yet</Typography>
     }
 
     return projects.map(renderProject);
   }
 
-  const renderLoading = () => range(4).map((i:number) => (
+  const renderLoading = () => range(4).map((i: number) => (
     <Grid item xs={12} md={4} lg={3} key={i}>
-      {range(6).map((elem:number) => ( <Skeleton key={elem} animation="wave" /> ))}
+      {range(6).map((elem: number) => (<Skeleton key={elem} animation="wave" />))}
     </Grid>
   ))
 
@@ -153,17 +144,17 @@ const ProjectOverview : React.FC = () => {
           </Button>
         </Grid>
 
-        { loading ? renderLoading() : renderProjects() }
+        {loading ? renderLoading() : renderProjects()}
       </Grid>
 
       <NewProjectDialog open={openProjectDialog} closeHandler={() => setOpenProjectDialog(false)} onProjectCreated={onProjectCreated} />
-      <AlertDialog 
-        open={openDeleteDialog} 
+      <AlertDialog
+        open={openDeleteDialog}
         onClose={onDelectProjectConfirm}
         title={'Do you really wish to delete the project?'}
         message={'It will be removed permanently.'}
         agreeButtonText={'Delete'}
-        disagreeButtonText={'Cancel'}/>
+        disagreeButtonText={'Cancel'} />
     </div>
   )
 }
