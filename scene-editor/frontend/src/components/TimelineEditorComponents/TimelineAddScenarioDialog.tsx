@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { makeStyles, createStyles } from '@mui/styles';
 import { createTheme } from '@mui/material/styles';
 
-import {range} from 'lodash';
+import { range } from 'lodash';
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -41,10 +41,10 @@ type NewScenarioDialog = {
   open: boolean;
   closeHandler: any;
   onScenariosAdded: any;
-  addedScenarios:string[];
+  addedScenarios: string[];
 };
 
-const NewScenarioDialog: React.FC<NewScenarioDialog> = ({projectID, timelineID, open, closeHandler, onScenariosAdded, addedScenarios}) => {
+const NewScenarioDialog: React.FC<NewScenarioDialog> = ({ projectID, timelineID, open, closeHandler, onScenariosAdded, addedScenarios }) => {
   const [scenarios, setScenarios] = useState([] as any);
   const [checked, setChecked] = useState([] as any[]);
   const [loadingScenarios, setLoadingScenarios] = useState(true);
@@ -55,16 +55,15 @@ const NewScenarioDialog: React.FC<NewScenarioDialog> = ({projectID, timelineID, 
     fetchScenarios();
   }, [open])
 
-  const setScenariosCallback = (fetchedScenarios:any) => {
-    const filteredScenarios = fetchedScenarios.filter((scenario:any) => addedScenarios.indexOf(scenario.id) === -1);
-    setScenarios(filteredScenarios);
+  const setScenariosCallback = (fetchedScenarios: any) => {
+    setScenarios(fetchedScenarios);
   }
 
   const fetchScenarios = () => {
     axios.get(`/api/project/${projectID}/scenarios`)
-      .then((res:any) => setScenariosCallback(res.data))
+      .then((res: any) => setScenariosCallback(res.data))
       .then(() => setLoadingScenarios(false))
-      .catch((e:any) => {console.log('error while fetching scenarios', e); setLoadingScenarios(false)})
+      .catch((e: any) => { console.log('error while fetching scenarios', e); setLoadingScenarios(false) })
   }
 
   const handleToggle = (value: number) => () => {
@@ -80,26 +79,26 @@ const NewScenarioDialog: React.FC<NewScenarioDialog> = ({projectID, timelineID, 
     setChecked(newChecked);
   };
 
-  const addScenarios = () => axios.post(`/api/timeline/${timelineID}/scenarios`, {scenarios: checked})
+  const addScenarios = () => axios.post(`/api/timeline/${timelineID}/scenarios`, { scenarios: checked })
     .then(onScenariosAdded)
     .then(() => setChecked([]))
     .then(() => setScenarios([]))
-    .catch((e:any) => console.log('something went wrong while adding scenarios', e))
+    .catch((e: any) => console.log('something went wrong while adding scenarios', e))
 
-  const createScenario = (scenario:any) => (
+  const createScenario = (scenario: any) => (
     <ListItem key={scenario.id} button>
       <ListItemAvatar>
-        <Avatar><PersonIcon/></Avatar>
+        <Avatar><PersonIcon /></Avatar>
       </ListItemAvatar>
       <ListItemText id={scenario.id} primary={scenario.name} secondary={scenario.description} />
       <ListItemSecondaryAction>
-          <Checkbox
-            edge="end"
-            onChange={handleToggle(scenario.id)}
-            checked={checked.indexOf(scenario.id) !== -1}
-            inputProps={{ 'aria-labelledby': scenario.id }}
-            color="primary"
-          />
+        <Checkbox
+          edge="end"
+          onChange={handleToggle(scenario.id)}
+          checked={checked.indexOf(scenario.id) !== -1}
+          inputProps={{ 'aria-labelledby': scenario.id }}
+          color="primary"
+        />
       </ListItemSecondaryAction>
     </ListItem>
   )
@@ -108,7 +107,7 @@ const NewScenarioDialog: React.FC<NewScenarioDialog> = ({projectID, timelineID, 
     if (loadingScenarios) {
       return (
         <div className={classes.list}>
-          {range(6).map((elem:number) => ( <Skeleton key={elem} animation="wave" /> ))}
+          {range(6).map((elem: number) => (<Skeleton key={elem} animation="wave" />))}
         </div>
       )
     }
@@ -117,20 +116,20 @@ const NewScenarioDialog: React.FC<NewScenarioDialog> = ({projectID, timelineID, 
   }
 
   return (
-      <Dialog open={open} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Add Scenarios</DialogTitle>
-        <DialogContent>
-          {renderScenarioList()}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {closeHandler(false);}} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={addScenarios} color="primary">
-            Add Scenarios
-          </Button>
-        </DialogActions>
-      </Dialog>
+    <Dialog open={open} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Add Scenarios</DialogTitle>
+      <DialogContent>
+        {renderScenarioList()}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => { closeHandler(false); }} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={addScenarios} color="primary">
+          Add Scenarios
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

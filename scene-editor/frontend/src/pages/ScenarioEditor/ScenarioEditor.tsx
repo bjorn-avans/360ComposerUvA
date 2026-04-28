@@ -54,14 +54,14 @@ import { Divider } from '@mui/material';
 
 const theme = createTheme();
 
-const BACKGROUND = (index:number) => {
+const BACKGROUND = (index: number) => {
   const colors = ["#2196f3", "#ffc107", "#795548", "#e91e63"]
   return colors[index] ? colors[index] : "#fff"
 }
 
 type SceneNodeProps = {
   data: any,
-  selected:any
+  selected: any
 }
 
 type ValidationResponse = {
@@ -83,18 +83,18 @@ const INITIAL_TIMELINE = {
 }
 
 const INITIAL_VALIDATION = {
-  validating: false, 
-  state: {valid: true, message: "", invalid_nodes: []}
+  validating: false,
+  state: { valid: true, message: "", invalid_nodes: [] }
 }
 
-const SceneNode = ({selected, data}:SceneNodeProps) => {
+const SceneNode = ({ selected, data }: SceneNodeProps) => {
   const navigate = useNavigate();
 
   const isStartNode = () => data.id === data.timeline.start_scene
 
   const isPossibleEndNode = () => data.actions.length !== data.links.length
 
-  const unreachable = data.timelineValidation.validating  && data.timelineValidation.state.invalid_nodes.indexOf(data.id) !== -1
+  const unreachable = data.timelineValidation.validating && data.timelineValidation.state.invalid_nodes.indexOf(data.id) !== -1
 
   const classes = (makeStyles((theme) => createStyles({
     tooltip: {
@@ -107,19 +107,19 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
 
   const possibleEndNodeText = () => {
     if (data.links.length === 0) {
-      return <Typography component="p" className={classes.tooltip}><ExitToAppIcon style={{marginRight: 5}} fontSize="small" /> End</Typography>
+      return <Typography component="p" className={classes.tooltip}><ExitToAppIcon style={{ marginRight: 5 }} fontSize="small" /> End</Typography>
     }
 
-    return <Typography component="p" className={classes.tooltip}><CallSplitIcon style={{marginRight: 5}} fontSize="small" /> Possible End</Typography>
+    return <Typography component="p" className={classes.tooltip}><CallSplitIcon style={{ marginRight: 5 }} fontSize="small" /> Possible End</Typography>
   }
 
   const tooltipTitle = () => {
     if (isStartNode()) {
-      return <Typography component="p" className={classes.tooltip}><HomeIcon fontSize="small" style={{marginRight: 5}} /> Start</Typography>
+      return <Typography component="p" className={classes.tooltip}><HomeIcon fontSize="small" style={{ marginRight: 5 }} /> Start</Typography>
     }
 
     if (unreachable) {
-      return <Typography component="p" className={classes.tooltip}><HelpOutlineIcon fontSize="small" style={{marginRight: 5}} /> Unreachable</Typography>
+      return <Typography component="p" className={classes.tooltip}><HelpOutlineIcon fontSize="small" style={{ marginRight: 5 }} /> Unreachable</Typography>
     }
 
     return isPossibleEndNode() ? possibleEndNodeText() : "";
@@ -137,7 +137,7 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
     return selected ? `2px solid #c4c4c4` : '1px solid rgba(0, 0, 0, 0.12)';
   }
 
-  const handleSetHome = (event:any) => {
+  const handleSetHome = (event: any) => {
     data.functions.setHome(data.id)
 
     // We do not want the button to select or drag the element.
@@ -149,7 +149,7 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
     navigate(`/app/editor/${data.projectID}/${data.scene_id}?goBack=true`)
   }
 
-  const renderHandles = () => data.actions.map((action:any, index:number) => {
+  const renderHandles = () => data.actions.map((action: any, index: number) => {
     return (
       <Handle
         type="source"
@@ -157,21 +157,21 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
         position="right"
         id={`${action.id}`}
         key={action.id}
-        style={{top: `${(25 * (index)) + 12}%`, height: 18, width: 18, right: -9, background: BACKGROUND(index)}}
+        style={{ top: `${(25 * (index)) + 12}%`, height: 18, width: 18, right: -9, background: BACKGROUND(index) }}
       />
     )
   })
 
   const renderLabels = () => {
-    const labels = data.actions.map((action:any, index:number) => {
+    const labels = data.actions.map((action: any, index: number) => {
       const backgroundColor = BACKGROUND(index);
       return (
         <Grid container spacing={0} key={index}>
           <Grid item xs={1}>
-            <div style={{marginTop: 2, height: 10, width: 10, borderRadius: '50%', background: backgroundColor}}></div>
+            <div style={{ marginTop: 2, height: 10, width: 10, borderRadius: '50%', background: backgroundColor }}></div>
           </Grid>
           <Grid item xs={11}>
-            <Typography variant="body1" component="p" style={{marginTop: 0, marginBottom: 5, fontSize: '0.7rem', fontWeight: 400}}>{action.label}</Typography>
+            <Typography variant="body1" component="p" style={{ marginTop: 0, marginBottom: 5, fontSize: '0.7rem', fontWeight: 400 }}>{action.label}</Typography>
           </Grid>
         </Grid>
       )
@@ -180,7 +180,7 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          <Typography variant="body1" component="p" style={{marginTop: 5, marginBottom: 10, fontSize: '0.8rem', fontWeight: 400}}>Actions</Typography>
+          <Typography variant="body1" component="p" style={{ marginTop: 5, marginBottom: 10, fontSize: '0.8rem', fontWeight: 400 }}>Actions</Typography>
         </Grid>
         <Grid item xs={12}>
           {labels}
@@ -188,14 +188,14 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
       </Grid>
     )
   }
-  
+
   const renderDescription = () => (
     <Grid container spacing={0}>
       <Grid item xs={12}>
-        <Typography variant="subtitle1" component="p" style={{fontSize: '1.2rem', fontWeight: 500}}>{data.scene.name}</Typography>
+        <Typography variant="subtitle1" component="p" style={{ fontSize: '1.2rem', fontWeight: 500 }}>{data.scene.name}</Typography>
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="body1" component="p" style={{marginBottom: 10, fontSize: '0.7rem', fontWeight: 300}}>{data.scene.description}</Typography>
+        <Typography variant="body1" component="p" style={{ marginBottom: 10, fontSize: '0.7rem', fontWeight: 300 }}>{data.scene.description}</Typography>
       </Grid>
     </Grid>
   )
@@ -205,16 +205,16 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
       <div>
         <Grid container spacing={0}>
           <Grid item xs={8}>
-            <Typography variant="subtitle1" component="p" style={{fontSize: '0.8rem', color: '#cfcfcf', display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}>{selected ? data.scene.name : 'Scene'}</Typography>
+            <Typography variant="subtitle1" component="p" style={{ fontSize: '0.8rem', color: '#cfcfcf', display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>{selected ? data.scene.name : 'Scene'}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <IconButton onClick={handleEdit} style={{color: selected? 'white' : '#757575'}} size="small">
-              <EditIcon fontSize="inherit"/>
+            <IconButton onClick={handleEdit} style={{ color: selected ? 'white' : '#757575' }} size="small">
+              <EditIcon fontSize="inherit" />
             </IconButton>
           </Grid>
           <Grid item xs={2}>
-            <IconButton className="nodrag" color={data.is_start ? 'primary' : 'default'} style={{color: selected? 'white' : '#757575'}} onClick={handleSetHome} size="small">
-              <HomeIcon fontSize="inherit"/>
+            <IconButton className="nodrag" color={data.is_start ? 'primary' : 'default'} style={{ color: selected ? 'white' : '#757575' }} onClick={handleSetHome} size="small">
+              <HomeIcon fontSize="inherit" />
             </IconButton>
           </Grid>
           <Grid item xs={12}>
@@ -253,18 +253,18 @@ const SceneNode = ({selected, data}:SceneNodeProps) => {
           type="target"
           //@ts-ignore
           position="left"
-          style={{ borderRadius: 0, height: 15, width: 15, left: -13, background: "#dbdbdb", border: "1px solid #bfbfbf"}}
+          style={{ borderRadius: 0, height: 15, width: 15, left: -13, background: "#dbdbdb", border: "1px solid #bfbfbf" }}
           id={`${data.id}`}
         />
-        { generalView() }
-        { renderHandles() }
+        {generalView()}
+        {renderHandles()}
       </Paper>
     </Tooltip>
   )
 }
 
-const ScenarioEditor:React.FC = () => {
-  const {projectID, scenarioID} = useParams<'projectID'|'scenarioID'>();
+const ScenarioEditor: React.FC = () => {
+  const { projectID, scenarioID } = useParams<'projectID' | 'scenarioID'>();
 
   const [fetchingTimelines, setFetchingTimelines] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -312,13 +312,13 @@ const ScenarioEditor:React.FC = () => {
   }, [timelineValidation])
 
   const OverviewCard = () => (
-    <Card style={{marginTop: 20}} variant="outlined">
+    <Card style={{ marginTop: 20 }} variant="outlined">
       <CardActionArea>
         <CardContent>
-          <Typography style={{fontSize: 14}} color="textSecondary" gutterBottom>
+          <Typography style={{ fontSize: 14 }} color="textSecondary" gutterBottom>
             Scenario Information
           </Typography>
-          <Divider style={{marginBottom: 10}}/>
+          <Divider style={{ marginBottom: 10 }} />
           <Typography gutterBottom variant="h5" component="h2">
             {timeline.name}
           </Typography>
@@ -335,19 +335,19 @@ const ScenarioEditor:React.FC = () => {
     </Card>
   )
 
-  const createEdges = (sourceID: string, scenarioScene:any) => {
-    return scenarioScene.links.reduce((acc: any, link:any, i:number) => {
+  const createEdges = (sourceID: string, scenarioScene: any) => {
+    return scenarioScene.links.reduce((acc: any, link: any, i: number) => {
       if (link.target_id) {
-        const actionObj = scenarioScene.actions.reduce((acc:any, action:any, i:number) => action.id === link.action_id ? {i, action} : acc, null);
+        const actionObj = scenarioScene.actions.reduce((acc: any, action: any, i: number) => action.id === link.action_id ? { i, action } : acc, null);
 
         if (actionObj === null) {
           return acc;
         }
 
-        const isSelected = (id:string) => selectedEdges.reduce((acc:boolean, edge:any) => edge.id === id || acc, false);
+        const isSelected = (id: string) => selectedEdges.reduce((acc: boolean, edge: any) => edge.id === id || acc, false);
 
         const id = `${link.id}->${link.action_id}->${link.target_id}`
-        const color = isSelected(id) ? "#a3a3a3" : `${BACKGROUND(actionObj.i)}`; 
+        const color = isSelected(id) ? "#a3a3a3" : `${BACKGROUND(actionObj.i)}`;
 
         const edge = {
           id,
@@ -356,7 +356,7 @@ const ScenarioEditor:React.FC = () => {
           target: link.target_id,
           targetHandle: `${link.target_id}`,
           type: 'smoothedge',
-          style: {strokeWidth: 2.2, stroke: color},
+          style: { strokeWidth: 2.2, stroke: color },
           arrowHeadType: 'arrow',
         }
 
@@ -368,14 +368,14 @@ const ScenarioEditor:React.FC = () => {
   }
 
   const timelineToElements = () => {
-    const setHome = (sceneID:string) => setTimeline({...timeline, start_scene: sceneID, revalidate: true})
+    const setHome = (sceneID: string) => setTimeline({ ...timeline, start_scene: sceneID, revalidate: true })
 
-    const elements = flatten(timeline.scenes.map((scenarioScene:any) => {
+    const elements = flatten(timeline.scenes.map((scenarioScene: any) => {
       const node = {
         id: scenarioScene.id,
         data: { ...scenarioScene, timeline, timelineValidation, projectID, sceneNodeRenderState, functions: { setHome } },
         type: 'special',
-        position: {x: scenarioScene.position_x, y: scenarioScene.position_y}
+        position: { x: scenarioScene.position_x, y: scenarioScene.position_y }
       };
 
       const edges = createEdges(scenarioScene.id, scenarioScene)
@@ -398,21 +398,21 @@ const ScenarioEditor:React.FC = () => {
   }
 
   const fetchScenarioTimeline = () => axios.get(`/api/scenario/${scenarioID}/`)
-      .then((res:any) => setTimeline({...res.data, revalidate: false}))
-      .then(() => setFetchingTimelines(false))
-      .catch(e => console.log('error fetching timeline', e))
+    .then((res: any) => setTimeline({ ...res.data, revalidate: false }))
+    .then(() => setFetchingTimelines(false))
+    .catch(e => console.log('error fetching timeline', e))
 
   const saveScenarioTimeline = () => {
-    return axios.post(`/api/scenario/${scenarioID}/`, {start_scene: timeline.start_scene, scenes: timeline.scenes})
+    return axios.post(`/api/scenario/${scenarioID}/`, { start_scene: timeline.start_scene, scenes: timeline.scenes })
       .then(() => setLastUpdated(new Date(Date.now())))
       .catch(e => console.log(e));
   }
 
-  const validateTimeline = (validating:boolean) => {
+  const validateTimeline = (validating: boolean) => {
     return axios.post(`/api/scenario/${scenarioID}/validate`)
-      .then((res:any) => setTimelineValidation({validating, state: res.data}))
+      .then((res: any) => setTimelineValidation({ validating, state: res.data }))
       .then(rerender)
-      .catch((e:any) => console.log('error while validating', e))
+      .catch((e: any) => console.log('error while validating', e))
   }
 
   const clearValidation = () => {
@@ -429,46 +429,65 @@ const ScenarioEditor:React.FC = () => {
     validateTimeline(true);
   }
 
-  const handleOnConnect = (params:any) => {
+  const handleOnConnect = (params: any) => {
     const source_id = params.source;
     const action_id = params.sourceHandle;
     const target_id = params.target;
 
-    return axios.post(`/api/scenario/${scenarioID}/scenes/connect`, {source_id, action_id, target_id})
-      .then((res:any) => addLink(res.data))
+    return axios.post(`/api/scenario/${scenarioID}/scenes/connect`, { source_id, action_id, target_id })
+      .then((res: any) => addLink(res.data))
       .then(() => { if (timelineValidation.validating) { validateTimeline(timelineValidation.validating); } })
       .catch((e) => console.log('error while creating link', e))
   }
 
-  const addLink = (link:any) => {
-    const scenes:any = timeline.scenes.map((scene:any) => 
-      scene.id === link.source_id  ? {...scene, links: concat(scene.links, link)} : scene
+  const addLink = (link: any) => {
+    const scenes: any = timeline.scenes.map((scene: any) =>
+      scene.id === link.source_id ? { ...scene, links: concat(scene.links, link) } : scene
     )
 
-    setTimeline({...timeline, scenes, revalidate: false})
+    setTimeline({ ...timeline, scenes, revalidate: false })
   }
 
-  const handleNodeDrag = (_:any, node:any) => {
-    setTimeline({...timeline, revalidate: false, scenes: timeline.scenes.reduce((acc:any, scenarioScene:any) => {
-      return concat(acc, scenarioScene.id === node.id ? {...scenarioScene, position_x: node.position.x, position_y: node.position.y} : scenarioScene)
-    }, [])});
+  const handleNodeDrag = (_: any, node: any) => {
+    setTimeline({
+      ...timeline, revalidate: false, scenes: timeline.scenes.reduce((acc: any, scenarioScene: any) => {
+        return concat(acc, scenarioScene.id === node.id ? { ...scenarioScene, position_x: node.position.x, position_y: node.position.y } : scenarioScene)
+      }, [])
+    });
   }
 
-  const onSelect = (elements:any) => {
+  const onSelect = (elements: any) => {
     setSelectedEdges(elements === null ? [] : elements.filter(isEdge))
   }
 
-  const deleteNodes = (ids:string[]) => axios.post(`/api/scenario/${scenarioID}/scenes/delete`, {ids})
+  const deleteNodes = (ids: string[]) => axios.post(`/api/scenario/${scenarioID}/scenes/delete`, { ids })
 
-  const removeLink = (edge:any) => {
-    axios.post(`/api/scenario/${scenarioID}/scenes/link/delete`, {id: edge.id.split('->')[0]})
+  const removeLink = (edge: any) => {
+    return axios.post(`/api/scenario/${scenarioID}/scenes/link/delete`, { id: edge.id.split('->')[0] })
       .then(fetchScenarioTimeline)
-      .then(() => validateTimeline(timelineValidation.validating))
-      .catch((e:any) => console.log('error while deleting link', e))
+      .then(() => {
+        setSelectedEdges([])
+        return validateTimeline(timelineValidation.validating)
+      })
+      .catch((e: any) => console.log('error while deleting link', e))
   }
 
-  const handleElementsRemove = (elements:any) => {
-    const scenes = elements.filter((element:any) => !isEdge(element));
+  const removeSelectedLinks = () => {
+    if (selectedEdges.length === 0) {
+      return;
+    }
+
+    return Promise.all(selectedEdges.map((edge: any) => axios.post(`/api/scenario/${scenarioID}/scenes/link/delete`, { id: edge.id.split('->')[0] })))
+      .then(fetchScenarioTimeline)
+      .then(() => {
+        setSelectedEdges([])
+        return validateTimeline(timelineValidation.validating)
+      })
+      .catch((e: any) => console.log('error while deleting links', e))
+  }
+
+  const handleElementsRemove = (elements: any) => {
+    const scenes = elements.filter((element: any) => !isEdge(element));
     const isSingleEdge = (scenes.length === 0 && elements.length === 1);
 
     if (isSingleEdge) {
@@ -476,13 +495,13 @@ const ScenarioEditor:React.FC = () => {
     }
 
     return saveScenarioTimeline()
-      .then(() => deleteNodes(scenes.map((scene:any) => scene.id)))
+      .then(() => deleteNodes(scenes.map((scene: any) => scene.id)))
       .then(fetchScenarioTimeline)
       .then(() => validateTimeline(timelineValidation.validating))
       .catch((e) => console.log('something went wrong while removing nodes: ', e))
   }
 
-  const onScenesAdded = (x:any) => {
+  const onScenesAdded = (x: any) => {
     fetchScenarioTimeline()
       .then(() => setDialogOpen(false))
       .then(() => validateTimeline(timelineValidation.validating))
@@ -521,7 +540,7 @@ const ScenarioEditor:React.FC = () => {
     }
   })))();
 
-  const nodePropsAreEqual = (prevProps:any, nextProps:any) => {
+  const nodePropsAreEqual = (prevProps: any, nextProps: any) => {
     return prevProps.data.sceneNodeRenderState === nextProps.data.sceneNodeRenderState
       && prevProps.data.timeline.start_scene === nextProps.data.timeline.start_scene
       && prevProps.selected === nextProps.selected
@@ -536,9 +555,9 @@ const ScenarioEditor:React.FC = () => {
   };
 
   const validationSwitch = () => (
-    <div style={{position: 'absolute', top: '18px', right: '240px', zIndex: 1000}}>
-      <Paper style={{padding: 5}}>
-        <FormGroup style={{marginLeft: 15}}>
+    <div style={{ position: 'absolute', top: '18px', right: '240px', zIndex: 1000 }}>
+      <Paper style={{ padding: 5 }}>
+        <FormGroup style={{ marginLeft: 15 }}>
           <FormControlLabel
             control={<Switch size="small" checked={timelineValidation.validating} onChange={handleValidationToggle} />}
             label={`validation: ${timelineValidation.validating ? 'on' : 'off'}`}
@@ -548,56 +567,64 @@ const ScenarioEditor:React.FC = () => {
     </div>
   )
 
-  const editor = () => fetchingTimelines 
-    ? (<Skeleton style={{marginTop: 20}} variant="rectangular" height={700}/>)
+  const editor = () => fetchingTimelines
+    ? (<Skeleton style={{ marginTop: 20 }} variant="rectangular" height={700} />)
     : (
-        <div className="editor-view">
-          <ReactFlow 
-            onElementsRemove={handleElementsRemove}
-            onNodeDragStop={handleNodeDrag}
-            elements={timelineToElements()}
-            onConnect={handleOnConnect}
-            onSelectionChange={onSelect}
-            onMove={rerender}
-            selectNodesOnDrag={false}
-            nodeTypes={nodeTypes}
-            nodesDraggable={true}
-            elementsSelectable={true}
-            zoomOnScroll={false}
-            snapToGrid
-          >
-            <Button
-              variant="contained"
-              size="small"
-              endIcon={<AddIcon/>}
-              onClick={() => setDialogOpen(true)}
-              style={{position: 'absolute', top: '20px', left: '20px', zIndex: 1000}}>Add Scene</Button>
-            { validationSwitch() }
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              endIcon={<BackupIcon/>}
-              onClick={saveScenarioTimeline}
-              style={{position: 'absolute', top: '20px', right: '140px', zIndex: 1000}}
-            >Save</Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              endIcon={<PlayArrowIcon/>}
-              onClick={previewScene}
-              style={{position: 'absolute', top: '20px', right: '20px', zIndex: 1000}}
-            >Preview</Button>
-            <Controls
-              onFitView={rerender}
-              onZoomIn={rerender}
-              onZoomOut={rerender}
-            />
-            <Background color="#aaa" gap={16} />
-          </ReactFlow>
-        </div>
-     )
+      <div className="editor-view">
+        <ReactFlow
+          onElementsRemove={handleElementsRemove}
+          onNodeDragStop={handleNodeDrag}
+          elements={timelineToElements()}
+          onConnect={handleOnConnect}
+          onSelectionChange={onSelect}
+          onMove={rerender}
+          selectNodesOnDrag={false}
+          nodeTypes={nodeTypes}
+          nodesDraggable={true}
+          elementsSelectable={true}
+          zoomOnScroll={false}
+          snapToGrid
+        >
+          <Button
+            variant="contained"
+            size="small"
+            endIcon={<AddIcon />}
+            onClick={() => setDialogOpen(true)}
+            style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 1000 }}>Add Scene</Button>
+          <Button
+            variant="contained"
+            size="small"
+            endIcon={<CloseIcon />}
+            onClick={removeSelectedLinks}
+            disabled={selectedEdges.length === 0}
+            style={{ position: 'absolute', top: '20px', left: '140px', zIndex: 1000 }}
+          >Remove Tie</Button>
+          {validationSwitch()}
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            endIcon={<BackupIcon />}
+            onClick={saveScenarioTimeline}
+            style={{ position: 'absolute', top: '20px', right: '140px', zIndex: 1000 }}
+          >Save</Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            endIcon={<PlayArrowIcon />}
+            onClick={previewScene}
+            style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 1000 }}
+          >Preview</Button>
+          <Controls
+            onFitView={rerender}
+            onZoomIn={rerender}
+            onZoomOut={rerender}
+          />
+          <Background color="#aaa" gap={16} />
+        </ReactFlow>
+      </div>
+    )
 
   const renderTop = () => (
     <div>
@@ -607,11 +634,11 @@ const ScenarioEditor:React.FC = () => {
         </Grid>
         <Grid item xs={11}>
           <Typography
-            style={{float: "right", marginRight: "20px", marginTop: "5px", display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
+            style={{ float: "right", marginRight: "20px", marginTop: "5px", display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}
             align="right"
             variant="body2"
             component="p">
-              <RefreshIcon fontSize="small" style={{marginRight: 5}} /> Last Updated: {lastUpdated.toLocaleString('en-GB')}
+            <RefreshIcon fontSize="small" style={{ marginRight: 5 }} /> Last Updated: {lastUpdated.toLocaleString('en-GB')}
           </Typography>
         </Grid>
       </Grid>
@@ -621,7 +648,7 @@ const ScenarioEditor:React.FC = () => {
   return (
     <div>
       <TopBar />
-      <SideMenu activeView={View.Project}/>
+      <SideMenu activeView={View.Project} />
       <div className={classes.root}>
         <Grid container spacing={0}>
           <Grid item xs={12}>
@@ -636,31 +663,31 @@ const ScenarioEditor:React.FC = () => {
 
           <Grid item xs={12}>
             <Collapse in={timelineWarningOpen}>
-            
-            <Alert
-              variant="filled"
-              severity={timelineValidation.state.valid ? "success" : "warning"}
-              style={{marginTop: 20}}
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setTimelineWarningOpen(false);
-                  }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
+
+              <Alert
+                variant="filled"
+                severity={timelineValidation.state.valid ? "success" : "warning"}
+                style={{ marginTop: 20 }}
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setTimelineWarningOpen(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
                 }
-            >
-              {timelineValidation.state.valid ? "Scenario is valid" : timelineValidation.state.message}
-            </Alert>
-          </Collapse>
+              >
+                {timelineValidation.state.valid ? "Scenario is valid" : timelineValidation.state.message}
+              </Alert>
+            </Collapse>
           </Grid>
 
           <Grid item xs={12}>
-            { editor() }
+            {editor()}
           </Grid>
         </Grid>
         <NewSceneDialog
@@ -668,15 +695,15 @@ const ScenarioEditor:React.FC = () => {
           scenarioID={scenarioID!}
           open={dialogOpen}
           closeHandler={() => setDialogOpen(false)}
-          onScenesAdded={onScenesAdded} 
+          onScenesAdded={onScenesAdded}
         />
-        
+
         <UpdateScenarioDialog
           scenarioID={scenarioID!}
-          scenario={{name: timeline.name, description: timeline.description}}
+          scenario={{ name: timeline.name, description: timeline.description }}
           open={updateDialogOpen}
           closeHandler={() => setUpdateDialogOpen(false)}
-          onScenarioUpdated={() => {setUpdateDialogOpen(false); fetchScenarioTimeline();}}
+          onScenarioUpdated={() => { setUpdateDialogOpen(false); fetchScenarioTimeline(); }}
         />
       </div>
     </div>

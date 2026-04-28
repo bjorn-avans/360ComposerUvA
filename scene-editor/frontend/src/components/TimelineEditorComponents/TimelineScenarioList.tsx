@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import { range } from 'lodash';
 
@@ -30,33 +30,33 @@ import TimelineAddScenarioDialog from './TimelineAddScenarioDialog';
 
 const theme = createTheme();
 const useStyles = makeStyles((theme) =>
-    createStyles({
-      root: {
-        flexGrow: 1,
-        padding: theme.spacing(2),
-      },
-      paper: {
-        padding: theme.spacing(2),
-        boxSizing: 'border-box'
-      },
-      box: {
-        flexGrow: 1
-      },
-      list: {
-        height: 300,
-        overflow: 'auto'
-      },
-      header: {
-        display: 'flex',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        fontSize: '1.1rem',
-        fontWeight: 700,
-        color: '#2196f3',
-        marginBottom: 10
-      }
-    }),
-  );
+  createStyles({
+    root: {
+      flexGrow: 1,
+      padding: theme.spacing(2),
+    },
+    paper: {
+      padding: theme.spacing(2),
+      boxSizing: 'border-box'
+    },
+    box: {
+      flexGrow: 1
+    },
+    list: {
+      height: 300,
+      overflow: 'auto'
+    },
+    header: {
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      fontSize: '1.1rem',
+      fontWeight: 700,
+      color: '#2196f3',
+      marginBottom: 10
+    }
+  }),
+);
 
 type ScenarioListProps = {
   timelineID: string;
@@ -69,7 +69,7 @@ type ScenarioListProps = {
   onSortEnd: any;
 }
 
-const TimelineScenarioList:React.FC<ScenarioListProps> = ({
+const TimelineScenarioList: React.FC<ScenarioListProps> = ({
   projectID,
   timelineID,
   randomized,
@@ -78,7 +78,7 @@ const TimelineScenarioList:React.FC<ScenarioListProps> = ({
   deleteCheckedScenarios,
   onSortEnd,
   loadingTimelineScenarios
-}:ScenarioListProps) => {
+}: ScenarioListProps) => {
   const [scenarioDialogOpen, setScenarioDialogOpen] = useState(false);
   const [checked, setChecked] = useState([] as any[])
 
@@ -103,36 +103,32 @@ const TimelineScenarioList:React.FC<ScenarioListProps> = ({
   }
 
 
-  const ScenarioItem = ({scenario, i}:any) => (
+  const ScenarioItem = ({ scenario, i }: any) => (
     <ListItem key={`${scenario.id}-${i}`} button>
       <ListItemAvatar className="drag-handle">
-        <DragHandleIcon/>
+        <DragHandleIcon />
       </ListItemAvatar>
       <ListItemText
         id={scenario.id}
-        primary={`${!randomized ? `${i+1}. ` : ''}${scenario.scenario.name}`}
-        secondary={scenario.scenario.description} 
+        primary={`${!randomized ? `${i + 1}. ` : ''}${scenario.scenario.name}`}
+        secondary={scenario.scenario.description}
       />
       <ListItemSecondaryAction>
-          <Checkbox
-            edge="end"
-            onChange={handleToggle(scenario.id)}
-            checked={checked.indexOf(scenario.id) !== -1}
-            inputProps={{ 'aria-labelledby': scenario.id }}
-          />
+        <Checkbox
+          edge="end"
+          onChange={handleToggle(scenario.id)}
+          checked={checked.indexOf(scenario.id) !== -1}
+          inputProps={{ 'aria-labelledby': scenario.id }}
+        />
       </ListItemSecondaryAction>
     </ListItem>
   )
 
-  const ScenarioList = ({scenarios}:any) => (
+  const ScenarioList = ({ scenarios }: any) => (
     <List className={classes.list}>
-      {/*<Container dragHandleSelector=".drag-handle" lockAxis="y" onDrop={onSortEnd}>
-        {scenarios.map((scenario:any, i:number) => (
-          <Draggable key={scenario.id}>
-            <ScenarioItem key={scenario.id} i={i} scenario={scenario} />
-          </Draggable>
-        ))}
-      </Container>*/}
+      {scenarios.map((scenario: any, i: number) => (
+        <ScenarioItem key={scenario.id} i={i} scenario={scenario} />
+      ))}
     </List>
   )
 
@@ -141,7 +137,7 @@ const TimelineScenarioList:React.FC<ScenarioListProps> = ({
       return <div className={classes.list}><Typography variant="subtitle1" component="p">No scenarios have been added yet</Typography></div>
     }
 
-    return <ScenarioList scenarios={timelineScenarios} onSortEnd={onSortEnd} useDragHandle/>
+    return <ScenarioList scenarios={timelineScenarios} onSortEnd={onSortEnd} useDragHandle />
   }
 
   const deleteChecked = () => deleteCheckedScenarios(checked)
@@ -151,7 +147,7 @@ const TimelineScenarioList:React.FC<ScenarioListProps> = ({
     if (loadingTimelineScenarios) {
       return (
         <div className={classes.list}>
-          {range(6).map((elem:number) => ( <Skeleton key={elem} animation="wave" /> ))}
+          {range(6).map((elem: number) => (<Skeleton key={elem} animation="wave" />))}
         </div>
       )
     }
@@ -161,18 +157,18 @@ const TimelineScenarioList:React.FC<ScenarioListProps> = ({
 
   return (
     <Paper elevation={0} variant="outlined" className={classes.paper}>
-      <Typography variant="h4" component="p" className={classes.header}><AccountTreeIcon style={{marginRight:5}}/> Scenarios</Typography>
+      <Typography variant="h4" component="p" className={classes.header}><AccountTreeIcon style={{ marginRight: 5 }} /> Scenarios</Typography>
       {renderScenariosList()}
       <Grid container>
         <Grid item xs={4}>
-          <Button style={{marginTop: 10}} color="primary" startIcon={<AddIcon />} onClick={() => setScenarioDialogOpen(true)}>Add</Button>
+          <Button style={{ marginTop: 10 }} color="primary" startIcon={<AddIcon />} onClick={() => setScenarioDialogOpen(true)}>Add</Button>
         </Grid>
         <Grid item xs={2}>
           <Box className={classes.box}></Box>
         </Grid>
         <Grid item xs={6}>
-          <Button 
-            style={{marginTop: 10}}
+          <Button
+            style={{ marginTop: 10 }}
             color="secondary"
             startIcon={<DeleteIcon />}
             disabled={checked.length === 0}
@@ -185,7 +181,7 @@ const TimelineScenarioList:React.FC<ScenarioListProps> = ({
         open={scenarioDialogOpen}
         closeHandler={() => setScenarioDialogOpen(false)}
         onScenariosAdded={onScenariosAdded_}
-        addedScenarios={timelineScenarios.map((scenario:any) => scenario.id)}
+        addedScenarios={timelineScenarios.map((scenario: any) => scenario.scenario_id || (scenario.scenario && scenario.scenario.id) || scenario.id)}
       />
     </Paper>
   )
